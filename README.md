@@ -79,6 +79,10 @@ The included workbook contains:
 
 If you add players beyond the existing example rows, extend the formulas and formatting on `Points & Totals` to the corresponding rows.
 
+## Contributing
+
+Interested in contributing a tool, improvement, or archive material? Ask me on Discord: **@maximooch**.
+
 ## Files
 
 - [`RandomPercent_Tourney_Example.xlsx`](RandomPercent_Tourney_Example.xlsx) — example tournament workbook.
