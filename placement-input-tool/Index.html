@@ -1,0 +1,167 @@
+<!doctype html>
+<html>
+  <head>
+    <base target="_top">
+    <style>
+      body { font: 13px Arial, sans-serif; padding: 12px; color: #202124; }
+      h2 { margin: 0 0 8px; font-size: 18px; }
+      p { line-height: 1.4; }
+      textarea { width: 100%; min-height: 260px; box-sizing: border-box; font: 12px monospace; }
+      button { margin-top: 10px; margin-right: 6px; padding: 8px 14px; border: 0; border-radius: 4px; background: #1a73e8; color: white; cursor: pointer; }
+      button.secondary { background: #5f6368; }
+      button:disabled { opacity: .6; cursor: default; }
+      #status { margin-top: 12px; white-space: pre-wrap; line-height: 1.4; }
+      #diagnostics { margin-top: 8px; padding: 8px; max-height: 180px; overflow: auto; white-space: pre-wrap; background: #f1f3f4; border-radius: 4px; font: 11px monospace; display: none; }
+      .hint { color: #5f6368; font-size: 12px; }
+    </style>
+  </head>
+  <body>
+    <h2>Enter round results</h2>
+    <p class="hint">Paste results in the same format you type them. Names may include a parenthetical note.</p>
+    <p class="hint"><b>Important:</b> for each map, players not listed are set blank/DNF.</p>
+    <p class="hint">Press <b>Shift+Enter</b> after a Map line to start at <b>1.</b>, then after each player to insert the next number.</p>
+    <textarea id="input" placeholder="Round 1:\n\nMap: Skylands\n\n1. Maximoochie\n2. Supermoar\n3. Ryxei\n4. Paris_Labrador"></textarea>
+    <button id="apply" onclick="applyPlacements()">Apply placements</button>
+    <button id="test" class="secondary" onclick="testConnection()">Test connection</button>
+    <button id="copy" class="secondary" onclick="copyInput()">Copy input</button>
+    <div id="status"></div>
+    <pre id="diagnostics"></pre>
+
+    <script>
+      const input = document.getElementById('input');
+
+      input.addEventListener('keydown', (event) => {
+        if (event.key !== 'Enter' || !event.shiftKey) return;
+        event.preventDefault();
+
+        const start = input.selectionStart;
+        const end = input.selectionEnd;
+        const lineStart = input.value.lastIndexOf('\n', start - 1) + 1;
+        const currentLine = input.value.slice(lineStart, start);
+        const numbered = currentLine.match(/^(\s*)(\d+)\.\s*/);
+        let insertion = '\n';
+
+        if (/^\s*map\s*:\s*.+$/i.test(currentLine)) {
+          insertion = '\n\n1. ';
+        } else if (numbered) {
+          insertion = `\n${numbered[1]}${Number(numbered[2]) + 1}. `;
+        }
+
+        input.setRangeText(insertion, start, end, 'end');
+      });
+
+      function applyPlacements() {
+        const button = document.getElementById('apply');
+        const status = document.getElementById('status');
+
+        if (!window.google || !google.script || !google.script.run) {
+          status.textContent = 'This is only a local preview. Install Code.gs and Index.html in Extensions → Apps Script, then open the tool from the spreadsheet menu.';
+          return;
+        }
+
+        button.disabled = true;
+        clearDiagnostics();
+        status.textContent = 'Updating…';
+
+        google.script.run
+          .withSuccessHandler((result) => {
+            if (result && result.ok) {
+              status.textContent = result.message;
+            } else {
+              status.textContent = 'Not updated:\n' + (result && result.message ? result.message : 'Unknown server response.');
+              showDiagnostics('Server returned an error', result);
+            }
+            button.disabled = false;
+          })
+          .withFailureHandler((error) => {
+            status.textContent = 'Apps Script transport failed. Use Test connection below; if it also fails, check Apps Script → Executions for whether the call reached the server.';
+            showDiagnostics('Apply transport failure', error);
+            button.disabled = false;
+          })
+          .writePlacements(document.getElementById('input').value);
+      }
+
+      function testConnection() {
+        const button = document.getElementById('test');
+        const status = document.getElementById('status');
+
+        if (!window.google || !google.script || !google.script.run) {
+          status.textContent = 'This is only a local preview; connection testing requires the Google Sheets sidebar.';
+          return;
+        }
+
+        button.disabled = true;
+        clearDiagnostics();
+        status.textContent = 'Testing sidebar connection…';
+
+        google.script.run
+          .withSuccessHandler((result) => {
+            status.textContent = result && result.message ? result.message : 'Sidebar connection succeeded.';
+            showDiagnostics('Connection response', result);
+            button.disabled = false;
+          })
+          .withFailureHandler((error) => {
+            status.textContent = 'Sidebar connection failed before placement processing ran.';
+            showDiagnostics('Connection transport failure', error);
+            button.disabled = false;
+          })
+          .placementToolPing();
+      }
+
+      function copyInput() {
+        const status = document.getElementById('status');
+        const value = document.getElementById('input').value;
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(value)
+            .then(() => { status.textContent = 'Input copied. Paste it into A4 of the Placement Input sheet.'; })
+            .catch(() => copyInputFallback(status));
+        } else {
+          copyInputFallback(status);
+        }
+      }
+
+      function copyInputFallback(status) {
+        const textarea = document.getElementById('input');
+        textarea.focus();
+        textarea.select();
+        const copied = document.execCommand('copy');
+        status.textContent = copied
+          ? 'Input copied. Paste it into A4 of the Placement Input sheet.'
+          : 'Copy failed. Select the input manually and copy it.';
+      }
+
+      function clearDiagnostics() {
+        const diagnostics = document.getElementById('diagnostics');
+        diagnostics.textContent = '';
+        diagnostics.style.display = 'none';
+      }
+
+      function showDiagnostics(label, error) {
+        const diagnostics = document.getElementById('diagnostics');
+        const details = {
+          label,
+          time: new Date().toISOString(),
+          name: error && error.name,
+          message: error && error.message,
+          stack: error && error.stack,
+          raw: safeSerialize(error),
+          browser: navigator.userAgent,
+        };
+        diagnostics.textContent = Object.entries(details)
+          .filter(([, value]) => value)
+          .map(([key, value]) => `${key}: ${value}`)
+          .join('\n');
+        diagnostics.style.display = 'block';
+      }
+
+      function safeSerialize(value) {
+        try {
+          return JSON.stringify(value, Object.getOwnPropertyNames(value || {}), 2);
+        } catch (_) {
+          return String(value);
+        }
+      }
+    </script>
+  </body>
+</html>
