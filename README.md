@@ -1,6 +1,19 @@
 # DECL
 
-DECL is a Google Sheets placement-entry helper for Random% tournaments. Paste a map's ranked finishers into a sidebar, and the tool writes each placement into the matching player row and map column automatically.
+DECL is an open-source suite of tools and archive for the **Dragon Escape Competitive League**.
+
+The first included tool is a Google Sheets placement-entry helper for Random% tournaments. Paste a map's ranked finishers into a sidebar, and it writes each placement into the matching player row and map column automatically.
+
+![DECL placement-entry sidebar filling tournament results](assets/placement-entry-demo.png)
+
+## Project scope
+
+DECL is intended to grow into a shared home for:
+
+- tournament administration and scoring tools;
+- league data, formats, and historical records;
+- reusable automation for organizers and competitors; and
+- documentation that helps future Dragon Escape events build on prior work.
 
 ## Features
 
