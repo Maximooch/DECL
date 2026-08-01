@@ -83,6 +83,12 @@ If you add players beyond the existing example rows, extend the formulas and for
 
 Interested in contributing a tool, improvement, or archive material? Ask me on Discord: **@maximooch**.
 
+## License
+
+The software and original project documentation in this repository are available under the [MIT License](LICENSE) unless a file or directory states otherwise.
+
+Future archival collections may use separate licenses appropriate to their contents. Those terms should be declared in the relevant archive directory, and third-party material remains subject to its original rights and permissions.
+
 ## Files
 
 - [`RandomPercent_Tourney_Example.xlsx`](RandomPercent_Tourney_Example.xlsx) — example tournament workbook.
