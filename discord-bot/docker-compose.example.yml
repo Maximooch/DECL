@@ -1,0 +1,10 @@
+services:
+  discord-bot:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - discord-bot-data:/data
+
+volumes:
+  discord-bot-data:

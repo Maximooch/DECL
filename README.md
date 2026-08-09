@@ -2,6 +2,8 @@
 
 DECL is an open-source suite of tools and archive for the **Dragon Escape Competitive League**.
 
+It includes a transactional Discord tournament bot alongside spreadsheet-based placement tooling.
+
 The first included tool is a Google Sheets placement-entry helper for Random% tournaments. Paste a map's ranked finishers into a sidebar, and it writes each placement into the matching player row and map column automatically.
 
 ![DECL placement-entry sidebar filling tournament results](assets/placement-entry-demo.png)
@@ -91,6 +93,7 @@ Future archival collections may use separate licenses appropriate to their conte
 
 ## Files
 
+- [`discord-bot/`](discord-bot/) — slash-command tournament bot with SQLite persistence and Coolify deployment support.
 - [`RandomPercent_Tourney_Example.xlsx`](RandomPercent_Tourney_Example.xlsx) — example tournament workbook.
 - [`placement-input-tool/Code.gs`](placement-input-tool/Code.gs) — bound Apps Script logic.
 - [`placement-input-tool/Index.html`](placement-input-tool/Index.html) — placement-entry sidebar.
