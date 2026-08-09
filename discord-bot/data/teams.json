@@ -1,0 +1,80 @@
+[
+    {
+        "name": "Big W",
+        "leader": "165732283167408128",
+        "members": [
+            {
+                "id": "165732283167408128",
+                "name": ".bluwu",
+                "role": "leader"
+            },
+            {
+                "id": "717748215469834263",
+                "name": "mekrozz",
+                "role": "player"
+            },
+            {
+                "id": "564980967719043078",
+                "name": "higuy333",
+                "role": "player"
+            }
+        ],
+        "stats": {
+            "wins": 0,
+            "losses": 0,
+            "points": 0
+        }
+    },
+    {
+        "name": "Based People",
+        "leader": "909918639191392316",
+        "members": [
+            {
+                "id": "909918639191392316",
+                "name": "paris_labrador",
+                "role": "leader"
+            },
+            {
+                "id": "396401739126800384",
+                "name": "supermoar",
+                "role": "player"
+            },
+            {
+                "id": "1091498015107321979",
+                "name": "ryxei",
+                "role": "player"
+            }
+        ],
+        "stats": {
+            "wins": 0,
+            "losses": 0,
+            "points": 0
+        }
+    },
+    {
+        "name": "Escape Artists",
+        "leader": "653965827883794435",
+        "members": [
+            {
+                "id": "653965827883794435",
+                "name": "__monster.",
+                "role": "leader"
+            },
+            {
+                "id": "398140414470914060",
+                "name": "di5cordants",
+                "role": "player"
+            },
+            {
+                "id": "265482048276267008",
+                "name": "_pikagod_",
+                "role": "player"
+            }
+        ],
+        "stats": {
+            "wins": 0,
+            "losses": 0,
+            "points": 0
+        }
+    }
+]

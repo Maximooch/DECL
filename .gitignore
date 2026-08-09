@@ -1,2 +1,11 @@
 .DS_Store
 ~$*.xlsx
+
+# Discord bot dependencies and local secrets
+discord-bot/node_modules/
+discord-bot/.env
+discord-bot/.env.*
+!discord-bot/.env.example
+
+# Local source archives
+/dragon-escape-bot-*.rar
