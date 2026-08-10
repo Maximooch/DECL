@@ -1,32 +1,6 @@
 [
     {
-        "name": "Big W",
-        "leader": "165732283167408128",
-        "members": [
-            {
-                "id": "165732283167408128",
-                "name": ".bluwu",
-                "role": "leader"
-            },
-            {
-                "id": "717748215469834263",
-                "name": "mekrozz",
-                "role": "player"
-            },
-            {
-                "id": "564980967719043078",
-                "name": "higuy333",
-                "role": "player"
-            }
-        ],
-        "stats": {
-            "wins": 0,
-            "losses": 0,
-            "points": 0
-        }
-    },
-    {
-        "name": "Based People",
+        "name": "GREAT WHITES",
         "leader": "909918639191392316",
         "members": [
             {
@@ -68,6 +42,53 @@
             {
                 "id": "265482048276267008",
                 "name": "_pikagod_",
+                "role": "player"
+            }
+        ],
+        "stats": {
+            "wins": 0,
+            "losses": 0,
+            "points": 0
+        }
+    },
+    {
+        "name": "b9\\",
+        "leader": "326472176888971296",
+        "members": [
+            {
+                "id": "326472176888971296",
+                "name": "dewmlap",
+                "role": "leader"
+            },
+            {
+                "id": "303980784505585665",
+                "name": "oliverpiper",
+                "role": "player"
+            }
+        ],
+        "stats": {
+            "wins": 0,
+            "losses": 0,
+            "points": 0
+        }
+    },
+    {
+        "name": "Employim",
+        "leader": "165732283167408128",
+        "members": [
+            {
+                "id": "165732283167408128",
+                "name": ".bluwu",
+                "role": "leader"
+            },
+            {
+                "id": "717748215469834263",
+                "name": "mekrozz",
+                "role": "player"
+            },
+            {
+                "id": "342441664863797260",
+                "name": "wind2earth",
                 "role": "player"
             }
         ],
