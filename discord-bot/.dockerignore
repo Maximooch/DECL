@@ -1,0 +1,12 @@
+.env
+.env.*
+!.env.example
+node_modules
+npm-debug.log*
+data/.initialized
+data/.pending-transaction.json
+data/healthy
+data/*.bak
+data/**/*.bak
+data/*.tmp-*
+data/**/*.tmp-*

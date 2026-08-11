@@ -1,15 +1,7 @@
 {
-    "active": true,
     "phase": "open",
-    "players": [
-        {
-            "id": "398140414470914060",
-            "ign": "di5cordants"
-        }
-    ],
+    "players": [],
     "teams": [],
-    "leaders": [],
-    "order": [],
     "turnOrder": [],
     "currentPick": 0,
     "picked": []
