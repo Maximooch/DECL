@@ -83,6 +83,21 @@ test("leadership transfer leaves exactly one stored leader", () => withStore(sto
     assert.throws(() => store.removeTeamMember("Red Dragons", "player-b"), /Transfer leadership/);
 }));
 
+test("leadership can transfer to a substitute on a full main roster", () => withStore(store => {
+    store.createTeam("Red Dragons", member("leader-a"));
+    store.addTeamMember("Red Dragons", member("player-b"));
+    store.addTeamMember("Red Dragons", member("player-c"));
+    store.addTeamMember("Red Dragons", member("player-d"));
+    store.addTeamMember("Red Dragons", member("substitute-e"), "substitute");
+
+    const team = store.transferLeadership("Red Dragons", "leader-a", member("substitute-e"));
+
+    assert.equal(team.leaderId, "substitute-e");
+    assert.equal(team.members.find(person => person.discordId === "substitute-e").role, "leader");
+    assert.equal(team.members.find(person => person.discordId === "leader-a").role, "substitute");
+    assert.equal(team.members.filter(person => person.role !== "substitute").length, 4);
+}));
+
 test("a departing leader transfers ownership and an empty team is deleted", () => withStore(store => {
     store.createTeam("Red Dragons", member("leader-a"));
     store.addTeamMember("Red Dragons", member("player-b"));

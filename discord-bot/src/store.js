@@ -152,11 +152,10 @@ class LeagueStore {
         const target = team.members.find(member => member.id === newLeader.id);
         if (!target) throw new DomainError("The new leader must already belong to the team.");
         if (target.id === team.leader) return this.#hydrateTeam(team, index);
-        if (target.role === "substitute") this.#assertRosterCapacity(state, team, "player");
 
         const previousLeaderId = team.leader;
         const previous = team.members.find(member => member.id === previousLeaderId);
-        previous.role = "player";
+        previous.role = target.role === "substitute" ? "substitute" : "player";
         target.role = "leader";
         target.name = newLeader.displayName;
         team.leader = newLeader.id;
