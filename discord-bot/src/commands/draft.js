@@ -1,7 +1,7 @@
 const { SlashCommandBuilder } = require("discord.js");
 const { DomainError } = require("../store");
 const { isTeamLeader } = require("../permissions");
-const { privateReply, publicReply, requireManagement } = require("./helpers");
+const { privateReply, publicReply, requireManagement, requireDraftPoolAccess } = require("./helpers");
 
 function createDraftCommand({ store, config }) {
     const data = new SlashCommandBuilder()
@@ -24,7 +24,8 @@ function createDraftCommand({ store, config }) {
             const action = interaction.options.getSubcommand();
 
             if (action === "join") {
-                const ign = store.getIgn(interaction.user.id) || interaction.user.username;
+                const ign = store.getIgn(interaction.user.id);
+                if (!ign) throw new DomainError("Set your Minecraft name with `/ign` before joining the draft.");
                 store.joinDraft({ id: interaction.user.id, ign });
                 return interaction.reply(privateReply(`You joined the draft pool as **${ign}**.`));
             }
@@ -45,7 +46,7 @@ function createDraftCommand({ store, config }) {
             }
 
             if (action === "view") {
-                if (!isTeamLeader(interaction, config)) throw new DomainError("Only team leaders and management can view the locked pool.");
+                requireDraftPoolAccess(interaction, store, config);
                 const state = store.getDraftState();
                 if (!["locked", "drafting", "finished"].includes(state.phase)) {
                     throw new DomainError("The pool becomes visible after registration is locked.");

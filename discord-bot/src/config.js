@@ -15,7 +15,7 @@ function loadConfig(environment = process.env) {
         throw new Error(`Missing required environment variables: ${missing.join(", ")}`);
     }
 
-    const dataDirectory = path.resolve(environment.DATA_DIR || "./runtime");
+    const dataDirectory = path.resolve(environment.DATA_DIR || "./data");
 
     return Object.freeze({
         token: environment.TOKEN,
@@ -23,8 +23,7 @@ function loadConfig(environment = process.env) {
         guildId: environment.GUILD_ID,
         managementRoleId: environment.MANAGEMENT_ROLE_ID,
         teamLeaderRoleId: environment.TEAM_LEADER_ROLE_ID,
-        dataDirectory,
-        databasePath: path.resolve(environment.DATABASE_PATH || path.join(dataDirectory, "decl.sqlite"))
+        dataDirectory
     });
 }
 

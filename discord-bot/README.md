@@ -1,6 +1,6 @@
 # DECL Discord bot
 
-The DECL bot manages Minecraft identities, league teams, player drafts, tournament weeks, matches, and results. It uses Discord slash commands and stores runtime state transactionally in SQLite.
+The DECL bot manages Minecraft identities, league teams, player drafts, tournament weeks, matches, and results. It uses Discord slash commands and keeps runtime state in human-readable JSON files.
 
 ## Requirements
 
@@ -29,8 +29,7 @@ Fill in these environment variables before registering commands or starting the 
 | `GUILD_ID` | Server where commands are registered |
 | `MANAGEMENT_ROLE_ID` | Role allowed to administer drafts, weeks, and matches |
 | `TEAM_LEADER_ROLE_ID` | Role assigned to team leaders |
-| `DATA_DIR` | Persistent state directory; defaults to `./runtime` locally and `/data` in Docker |
-| `DATABASE_PATH` | Optional SQLite path override |
+| `DATA_DIR` | Optional state directory; defaults to `./data` locally and `/data` in Docker |
 
 Startup fails with a concise list when required configuration is missing. Never commit `.env`.
 
@@ -43,18 +42,22 @@ Startup fails with a concise list when required configuration is missing. Never 
 
 Team and match names are Discord string options, so names containing spaces work normally. Management-only operations verify `MANAGEMENT_ROLE_ID` at execution time.
 
-## SQLite and legacy data
+## JSON data
 
-The first startup creates `decl.sqlite` in `DATA_DIR`. When the database has no teams, the bot imports the included legacy JSON players, teams, current week, matches, and open draft pool once. All later writes go to SQLite. SQLite WAL mode, foreign keys, uniqueness constraints, and transactions protect team and draft invariants.
+The bot keeps teams, players, drafts, the active week, and weekly matches under `DATA_DIR`. Local development uses the tracked `data/` directory. A new Docker volume is seeded from those files once; after that, `/data` is the live source of truth.
 
-Back up the entire data directory. Do not scale this bot beyond one container while using SQLite.
+Partners may edit `teams.json` directly, but stop the bot first and keep the existing shape. Startup validates unique team names and members, exactly one matching leader, and roster limits. Team names retained in archived matches cannot be reused through bot commands. Writes replace files atomically and keep the previous version beside each file as `*.bak`; draft picks use a small recovery journal so `teams.json` and `draft.json` stay in sync.
+
+In Coolify, edit `/data/teams.json`, not the copy bundled into the image. The bundled `data/teams.json` is only the seed for a brand-new volume. Back up the entire data directory and run only one bot container.
+
+If startup finds an older `decl.sqlite` in `DATA_DIR`, it stops instead of silently replacing that state. Back up and export the database before moving it out of `DATA_DIR`; a fresh JSON deployment does not require this step.
 
 ## Coolify deployment
 
 1. Create a Coolify application from this repository and set the base directory to `/discord-bot`.
 2. Select the included `Dockerfile` build pack.
 3. Add every required environment variable in Coolify. Use the rotated token, not the token from the original archive.
-4. Add persistent storage mounted at `/data`. Without this volume, a redeploy loses the SQLite database.
+4. Add persistent storage mounted at `/data`. Without this volume, a redeploy loses the live JSON files.
 5. Deploy the application.
 6. Open the application terminal once and run `npm run deploy:commands` whenever command definitions change.
 
@@ -67,4 +70,4 @@ npm test
 npm run test:watch
 ```
 
-Tests use temporary SQLite databases and do not contact Discord.
+Tests use temporary JSON directories and do not contact Discord.

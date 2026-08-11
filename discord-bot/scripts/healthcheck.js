@@ -1,7 +1,7 @@
 const fs = require("node:fs");
 const path = require("node:path");
 
-const dataDirectory = path.resolve(process.env.DATA_DIR || "./runtime");
+const dataDirectory = path.resolve(process.env.DATA_DIR || "./data");
 const heartbeatPath = path.join(dataDirectory, "healthy");
 
 try {

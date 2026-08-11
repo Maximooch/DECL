@@ -8,9 +8,9 @@ const { LeagueStore, DomainError } = require("./store");
 const { createCommands } = require("./commands");
 
 const config = loadConfig();
-const store = new LeagueStore(config.databasePath);
-const imported = store.importLegacyData(path.join(__dirname, "..", "data"));
-if (imported) console.log("Imported legacy JSON data into SQLite.");
+const heartbeatPath = path.join(config.dataDirectory, "healthy");
+fs.rmSync(heartbeatPath, { force: true });
+const store = new LeagueStore(config.dataDirectory, path.join(__dirname, "..", "data"));
 
 const commands = createCommands({ store, config });
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
@@ -20,7 +20,6 @@ let heartbeat;
 
 client.once(Events.ClientReady, readyClient => {
     console.log(`${readyClient.user.tag} is online with ${commands.length} slash commands.`);
-    const heartbeatPath = path.join(config.dataDirectory, "healthy");
     const writeHeartbeat = () => fs.writeFileSync(heartbeatPath, new Date().toISOString());
     writeHeartbeat();
     heartbeat = setInterval(writeHeartbeat, 60_000);

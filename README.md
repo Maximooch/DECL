@@ -93,7 +93,7 @@ Future archival collections may use separate licenses appropriate to their conte
 
 ## Files
 
-- [`discord-bot/`](discord-bot/) — slash-command tournament bot with SQLite persistence and Coolify deployment support.
+- [`discord-bot/`](discord-bot/) — slash-command tournament bot with human-readable JSON persistence and Coolify deployment support.
 - [`RandomPercent_Tourney_Example.xlsx`](RandomPercent_Tourney_Example.xlsx) — example tournament workbook.
 - [`placement-input-tool/Code.gs`](placement-input-tool/Code.gs) — bound Apps Script logic.
 - [`placement-input-tool/Index.html`](placement-input-tool/Index.html) — placement-entry sidebar.

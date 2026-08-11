@@ -2,11 +2,8 @@ FROM node:22-bookworm-slim AS dependencies
 
 WORKDIR /app
 COPY package.json package-lock.json ./
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends build-essential python3 \
-    && npm ci --omit=dev \
-    && npm cache clean --force \
-    && rm -rf /var/lib/apt/lists/*
+RUN npm ci --omit=dev \
+    && npm cache clean --force
 
 FROM node:22-bookworm-slim AS test
 
@@ -16,6 +13,7 @@ COPY package.json package-lock.json index.js deploy-commands.js ./
 COPY src ./src
 COPY scripts ./scripts
 COPY data ./data
+COPY docker-compose.example.yml ./
 COPY test ./test
 RUN npm test
 

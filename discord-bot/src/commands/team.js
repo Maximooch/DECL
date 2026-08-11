@@ -5,6 +5,7 @@ const {
     publicReply,
     toMember,
     requireManagement,
+    requireTeamLeader,
     resolveManagedTeam,
     updateLeaderRoles
 } = require("./helpers");
@@ -70,6 +71,7 @@ function createTeamCommand({ store, config }) {
             }
 
             if (action === "transfer") {
+                requireTeamLeader(interaction, config);
                 const current = store.getTeamForUser(interaction.user.id);
                 if (!current || current.leaderId !== interaction.user.id) throw new DomainError("You are not a team leader.");
                 const user = interaction.options.getUser("user", true);
@@ -92,8 +94,9 @@ function createTeamCommand({ store, config }) {
             if (action === "disband") {
                 requireManagement(interaction, config);
                 const team = store.disbandTeam(interaction.options.getString("team", true));
-                await updateLeaderRoles(interaction.guild, config.teamLeaderRoleId, team.leaderId, null);
-                return interaction.reply(publicReply(`Disbanded **${team.name}**.`));
+                const warnings = await updateLeaderRoles(interaction.guild, config.teamLeaderRoleId, team.leaderId, null);
+                const suffix = warnings.length ? " I could not remove the former leader's Discord role." : "";
+                return interaction.reply(publicReply(`Disbanded **${team.name}**.${suffix}`));
             }
 
             const requestedTeam = interaction.options.getString("team");
